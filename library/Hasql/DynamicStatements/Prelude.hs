@@ -84,3 +84,23 @@ import Data.ByteString as Exports (ByteString)
 -- text
 -------------------------
 import Data.Text as Exports (Text)
+
+-- vector
+-------------------------
+import Data.Vector as Exports (Vector)
+
+-- scientific
+-------------------------
+import Data.Scientific as Exports (Scientific)
+
+-- uuid
+-------------------------
+import Data.UUID as Exports (UUID)
+
+-- time
+-------------------------
+import Data.Time as Exports
+
+-- network-ip
+-------------------------
+import Network.IP.Addr as Exports (NetAddr, IP)
