@@ -29,6 +29,7 @@ import Data.Fixed as Exports
 import Data.Foldable as Exports hiding (toList)
 import Data.Function as Exports hiding (id, (.))
 import Data.Functor as Exports
+import Data.Functor.Contravariant as Exports
 import Data.Functor.Identity as Exports
 import Data.Int as Exports
 import Data.IORef as Exports
@@ -71,3 +72,15 @@ import Text.ParserCombinators.ReadPrec as Exports (ReadPrec, readPrec_to_P, read
 import Text.Printf as Exports (printf, hPrintf)
 import Text.Read as Exports (Read(..), readMaybe, readEither)
 import Unsafe.Coerce as Exports
+
+-- containers
+-------------------------
+import Data.Sequence as Exports (Seq)
+
+-- bytestring
+-------------------------
+import Data.ByteString as Exports (ByteString)
+
+-- text
+-------------------------
+import Data.Text as Exports (Text)

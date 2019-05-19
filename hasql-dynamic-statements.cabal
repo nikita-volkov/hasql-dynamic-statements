@@ -27,5 +27,8 @@ library
     Hasql.DynamicStatements.Prelude
     Hasql.DynamicStatements.Snippet.Defs
   build-depends:
-    base >=4.9 && <5,
-    hasql >=1.3.0.5 && <1.4
+    base >=4.12 && <5,
+    bytestring >=0.10 && <0.11,
+    containers >=0.6 && <0.7,
+    hasql >=1.3.0.5 && <1.4,
+    text >=1 && <2
