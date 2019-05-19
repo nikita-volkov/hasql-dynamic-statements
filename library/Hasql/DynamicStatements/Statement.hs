@@ -12,7 +12,7 @@ import qualified Ptr.ByteString as ByteString
 Construct a statement dynamically, specifying the parameters in-place.
 -}
 snippet :: SnippetDefs.Snippet -> Decoders.Result result -> Statement () result
-snippet (SnippetDefs.Snippet _ chunks) decoder = let
+snippet (SnippetDefs.Snippet chunks) decoder = let
   step (!paramId, !poking, !encoder) = \ case
     SnippetDefs.TextSnippetChunk sql -> (paramId, poking <> Poking.bytes sql, encoder)
     SnippetDefs.ParamSnippetChunk paramEncoder -> let

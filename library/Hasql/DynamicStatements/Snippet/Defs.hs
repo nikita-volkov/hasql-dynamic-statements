@@ -4,30 +4,23 @@ import Hasql.DynamicStatements.Prelude
 import qualified Hasql.Encoders as Encoders
 
 
-data Snippet = Snippet
-  Int {-^ Amount of placeholders -}
-  (Seq SnippetChunk)
+newtype Snippet = Snippet (Seq SnippetChunk)
 
 data SnippetChunk =
   TextSnippetChunk ByteString |
   ParamSnippetChunk (Encoders.Value ())
 
-instance Semigroup Snippet where
-  (<>) (Snippet amountOfPlaceholdersL chunksL) (Snippet amountOfPlaceholdersR chunksR) =
-    Snippet (amountOfPlaceholdersL + amountOfPlaceholdersR) (chunksL <> chunksR)
-
-instance Monoid Snippet where
-  mempty = Snippet 0 mempty
-  mappend = (<>)
+deriving instance Semigroup Snippet
+deriving instance Monoid Snippet
 
 instance IsString Snippet where
-  fromString x = Snippet 0 (pure (TextSnippetChunk (fromString x)))
+  fromString x = Snippet (pure (TextSnippetChunk (fromString x)))
 
 byteStringSnippet :: ByteString -> Snippet
-byteStringSnippet x = Snippet 0 (pure (TextSnippetChunk x))
+byteStringSnippet x = Snippet (pure (TextSnippetChunk x))
 
 param :: Encoders.Value param -> param -> Snippet
-param encoder param = Snippet 1 (pure (ParamSnippetChunk (param >$ encoder)))
+param encoder param = Snippet (pure (ParamSnippetChunk (param >$ encoder)))
 
 text :: Text -> Snippet
 text = param Encoders.text
