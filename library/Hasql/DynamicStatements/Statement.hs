@@ -18,7 +18,7 @@ snippet (SnippetDefs.Snippet chunks) decoder = let
     SnippetDefs.ParamSnippetChunk paramEncoder -> let
       newParamId = paramId + 1
       newPoking = poking <> Poking.word8 36 <> Poking.asciiIntegral paramId
-      newEncoder = encoder <> Encoders.param paramEncoder
+      newEncoder = encoder <> paramEncoder
       in (newParamId, newPoking, newEncoder)
   in case foldl' step (1, mempty, mempty) chunks of
     (_, poking, encoder) -> Statement (ByteString.poking poking) encoder decoder False

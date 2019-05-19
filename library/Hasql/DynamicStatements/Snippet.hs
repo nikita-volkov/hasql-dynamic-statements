@@ -1,4 +1,8 @@
-module Hasql.DynamicStatements.Snippet where
+module Hasql.DynamicStatements.Snippet
+(
+  Snippet,
+  param,
+)
+where
 
-import Hasql.DynamicStatements.Prelude
-import qualified Hasql.DynamicStatements.Snippet.Defs as SnippetDefs
+import Hasql.DynamicStatements.Snippet.Defs
