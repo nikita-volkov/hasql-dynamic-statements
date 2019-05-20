@@ -22,3 +22,6 @@ sql x = Snippet (pure (TextSnippetChunk x))
 
 param :: ImplicitEncoders.ParamsEncoder param => param -> Snippet
 param param = Snippet (pure (ParamSnippetChunk (param >$ ImplicitEncoders.params)))
+
+encoderAndParam :: Encoders.Params param -> param -> Snippet
+encoderAndParam encoder param = Snippet (pure (ParamSnippetChunk (param >$ encoder)))
