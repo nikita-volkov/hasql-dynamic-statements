@@ -104,3 +104,7 @@ import Data.Time as Exports
 -- network-ip
 -------------------------
 import Network.IP.Addr as Exports (NetAddr, IP)
+
+-- data-default
+-------------------------
+import Data.Default as Exports

@@ -2,6 +2,9 @@ module Hasql.DynamicStatements.Snippet
 (
   Snippet,
   param,
+  nullableParam,
+  encoderAndParam,
+  encoderAndNullableParam,
 )
 where
 
