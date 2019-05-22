@@ -1,5 +1,5 @@
 name: hasql-dynamic-statements
-version: 0.4.2.1
+version: 0.1
 synopsis: Toolkit for constructing Hasql statements dynamically
 homepage: https://github.com/nikita-volkov/hasql-dynamic-statements
 bug-reports: https://github.com/nikita-volkov/hasql-dynamic-statements/issues
