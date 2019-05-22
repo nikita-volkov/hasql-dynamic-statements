@@ -11,20 +11,20 @@ Dynamically generated statement.
 newtype Snippet = Snippet (Seq SnippetChunk)
 
 data SnippetChunk =
-  TextSnippetChunk ByteString |
+  StringSnippetChunk ByteString |
   ParamSnippetChunk (Encoders.Params ())
 
 deriving instance Semigroup Snippet
 deriving instance Monoid Snippet
 
 instance IsString Snippet where
-  fromString x = Snippet (pure (TextSnippetChunk (fromString x)))
+  fromString x = Snippet (pure (StringSnippetChunk (fromString x)))
 
 {-|
 SQL chunk in ASCII.
 -}
 sql :: ByteString -> Snippet
-sql x = Snippet (pure (TextSnippetChunk x))
+sql x = Snippet (pure (StringSnippetChunk x))
 
 {-|
 Parameter encoded using an implicitly derived encoder from the type.

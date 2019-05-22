@@ -14,7 +14,7 @@ Construct a statement dynamically, specifying the parameters in-place.
 snippet :: SnippetDefs.Snippet -> Decoders.Result result -> Statement () result
 snippet (SnippetDefs.Snippet chunks) decoder = let
   step (!paramId, !poking, !encoder) = \ case
-    SnippetDefs.TextSnippetChunk sql -> (paramId, poking <> Poking.bytes sql, encoder)
+    SnippetDefs.StringSnippetChunk sql -> (paramId, poking <> Poking.bytes sql, encoder)
     SnippetDefs.ParamSnippetChunk paramEncoder -> let
       newParamId = paramId + 1
       newPoking = poking <> Poking.word8 36 <> Poking.asciiIntegral paramId
