@@ -9,10 +9,50 @@ import qualified Ptr.Poking as Poking
 import qualified Ptr.ByteString as ByteString
 
 {-|
-Construct a statement dynamically, specifying the parameters in-place.
+Construct a statement dynamically, specifying the parameters in-place
+in the declaration of snippet and providing a result decoder.
+
+The injection of the parameters is handled automatically,
+generating parametric statements with binary encoders under the hood.
+
+This is useful when the SQL of your statement depends on the parameters.
+Here's an example:
+
+@
+selectSubstring :: Text -> Maybe Int64 -> Maybe Int64 -> 'Statement' () Text
+selectSubstring string from to = let
+  snippet =
+    "select substring(" <> Snippet.'SnippetDefs.param' string <>
+    foldMap (mappend " from " . Snippet.'SnippetDefs.param') from <>
+    foldMap (mappend " to " . Snippet.'SnippetDefs.param') to <>
+    ")"
+  decoder = Decoders.'Decoders.singleRow' (Decoders.'Decoders.column' Decoders.'Decoders.text')
+  in 'snippetAndDecoder' snippet decoder
+@
+
+Without the Snippet API you would have had to implement the same functionality thus:
+
+@
+selectSubstring' :: Text -> Maybe Int64 -> Maybe Int64 -> 'Statement' () Text
+selectSubstring' string from to = let
+  sql = case (from, to) of
+    (Just _, Just _) -> "select substring($1 from $2 to $3)"
+    (Just _, Nothing) -> "select substring($1 from $2)"
+    (Nothing, Just _) -> "select substring($1 to $2)"
+    (Nothing, Nothing) -> "select substring($1)"
+  encoder = 
+    Encoders.'Encoders.param' (string '>$' Encoders.'Encoders.text') <>
+    foldMap (\\ x -> Encoders.'Encoders.param' (x '>$' Encoders.'Encoders.int8')) from <>
+    foldMap (\\ x -> Encoders.'Encoders.param' (x '>$' Encoders.'Encoders.int8')) to
+  decoder = Decoders.'Decoders.singleRow' (Decoders.'Decoders.column' Decoders.'Decoders.text')
+  in Statement sql encoder decoder False
+@
+
+As you can see, the Snippet API protects you from bugs related to placeholder identification and
+encoder mismatches.
 -}
-snippet :: SnippetDefs.Snippet -> Decoders.Result result -> Statement () result
-snippet (SnippetDefs.Snippet chunks) decoder = let
+snippetAndDecoder :: SnippetDefs.Snippet -> Decoders.Result result -> Statement () result
+snippetAndDecoder (SnippetDefs.Snippet chunks) decoder = let
   step (!paramId, !poking, !encoder) = \ case
     SnippetDefs.StringSnippetChunk sql -> (paramId, poking <> Poking.bytes sql, encoder)
     SnippetDefs.ParamSnippetChunk paramEncoder -> let

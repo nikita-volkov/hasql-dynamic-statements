@@ -11,4 +11,4 @@ import qualified Hasql.Session as Session
 Execute a dynamically constructed statement, providing a result decoder.
 -}
 snippet :: SnippetDefs.Snippet -> Decoders.Result result -> Session result
-snippet snippet decoder = Session.statement () (Statement.snippet snippet decoder)
+snippet snippet decoder = Session.statement () (Statement.snippetAndDecoder snippet decoder)

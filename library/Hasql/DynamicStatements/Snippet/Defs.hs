@@ -6,6 +6,20 @@ import qualified Hasql.Encoders as Encoders
 
 {-|
 Dynamically generated statement.
+
+It has an instance of `IsString`, so having the @OverloadedStrings@ extension enabled
+you can use string literals to construct it.
+
+Here's an example:
+
+@
+selectSubstring :: Text -> Maybe Int64 -> Maybe Int64 -> 'Snippet'
+selectSubstring string from to =
+  "select substring(" <> 'param' string <>
+  'foldMap' (\\ x -> " from " <> 'param' x) from <>
+  'foldMap' (\\ x -> " for " <> 'param' x) to <>
+  ")"
+@
 -}
 newtype Snippet = Snippet (Seq SnippetChunk)
 
