@@ -48,8 +48,8 @@ selectSubstring' string from to = let
   in Statement sql encoder decoder False
 @
 
-As you can see, the Snippet API protects you from bugs related to placeholder identification and
-encoder mismatches.
+As you can see, the Snippet API abstracts over placeholders and
+matching encoder generation, thus also protecting you from all sorts of related bugs.
 -}
 snippetAndDecoder :: SnippetDefs.Snippet -> Decoders.Result result -> Statement () result
 snippetAndDecoder (SnippetDefs.Snippet chunks) decoder = let

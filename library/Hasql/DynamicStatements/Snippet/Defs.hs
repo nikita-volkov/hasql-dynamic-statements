@@ -5,10 +5,11 @@ import qualified Hasql.Encoders as Encoders
 
 
 {-|
-Dynamically generated statement.
+Composable SQL snippet with parameters injected.
+Abstracts over placeholders and matching of encoders.
 
 It has an instance of `IsString`, so having the @OverloadedStrings@ extension enabled
-you can use string literals to construct it.
+you can use string literals to construct it from string.
 
 Here's an example:
 
@@ -20,6 +21,11 @@ selectSubstring string from to =
   'foldMap' (\\ x -> " for " <> 'param' x) to <>
   ")"
 @
+
+Having a decoder you can lift it into 'Hasql.Statement.Statement' using
+'Hasql.DynamicStatements.Statement.snippetAndDecoder' or directly execute it in
+'Hasql.Session.Session' using
+'Hasql.DynamicStatements.Session.snippet'.
 -}
 newtype Snippet = Snippet (Seq SnippetChunk)
 
