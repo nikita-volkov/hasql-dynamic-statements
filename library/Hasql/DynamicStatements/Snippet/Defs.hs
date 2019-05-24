@@ -23,7 +23,7 @@ selectSubstring string from to =
 @
 
 Having a decoder you can lift it into 'Hasql.Statement.Statement' using
-'Hasql.DynamicStatements.Statement.snippetAndDecoder' or directly execute it in
+'Hasql.DynamicStatements.Statement.dynamicallyParameterized' or directly execute it in
 'Hasql.Session.Session' using
 'Hasql.DynamicStatements.Session.snippet'.
 -}

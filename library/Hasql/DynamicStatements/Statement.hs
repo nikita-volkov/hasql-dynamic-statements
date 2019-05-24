@@ -27,7 +27,7 @@ selectSubstring string from to = let
     foldMap (mappend " to " . Snippet.'SnippetDefs.param') to <>
     ")"
   decoder = Decoders.'Decoders.singleRow' (Decoders.'Decoders.column' Decoders.'Decoders.text')
-  in 'snippetAndDecoder' snippet decoder
+  in 'dynamicallyParameterized' snippet decoder
 @
 
 Without the Snippet API you would have had to implement the same functionality thus:
@@ -51,8 +51,8 @@ selectSubstring' string from to = let
 As you can see, the Snippet API abstracts over placeholders and
 matching encoder generation, thus also protecting you from all sorts of related bugs.
 -}
-snippetAndDecoder :: SnippetDefs.Snippet -> Decoders.Result result -> Statement () result
-snippetAndDecoder (SnippetDefs.Snippet chunks) decoder = let
+dynamicallyParameterized :: SnippetDefs.Snippet -> Decoders.Result result -> Statement () result
+dynamicallyParameterized (SnippetDefs.Snippet chunks) decoder = let
   step (!paramId, !poking, !encoder) = \ case
     SnippetDefs.StringSnippetChunk sql -> (paramId, poking <> Poking.bytes sql, encoder)
     SnippetDefs.ParamSnippetChunk paramEncoder -> let

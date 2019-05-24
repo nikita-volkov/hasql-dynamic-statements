@@ -8,7 +8,12 @@ import qualified Hasql.Decoders as Decoders
 import qualified Hasql.Session as Session
 
 {-|
-Execute a dynamically constructed statement, providing a result decoder.
+Execute a dynamically parameterized statement, providing a result decoder.
+
+This is merely a shortcut, which immediately embeds
+@Hasql.DynamicStatements.Statement.'Statement.dynamicallyParameterized'@
+in @Session@.
+For details see the docs on that function.
 -}
-snippet :: SnippetDefs.Snippet -> Decoders.Result result -> Session result
-snippet snippet decoder = Session.statement () (Statement.snippetAndDecoder snippet decoder)
+dynamicallyParameterizedStatement :: SnippetDefs.Snippet -> Decoders.Result result -> Session result
+dynamicallyParameterizedStatement snippet decoder = Session.statement () (Statement.dynamicallyParameterized snippet decoder)
