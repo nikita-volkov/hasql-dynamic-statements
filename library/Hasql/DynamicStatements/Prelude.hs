@@ -80,7 +80,3 @@ import Data.Sequence as Exports (Seq)
 -- bytestring
 -------------------------
 import Data.ByteString as Exports (ByteString)
-
--- data-default
--------------------------
-import Data.Default as Exports

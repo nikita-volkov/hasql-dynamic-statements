@@ -26,7 +26,7 @@ selectSubstring string from to = let
     foldMap (mappend " from " . Snippet.'SnippetDefs.param') from <>
     foldMap (mappend " for " . Snippet.'SnippetDefs.param') to <>
     ")"
-  decoder = Decoders.'Decoders.singleRow' (Decoders.'Decoders.column' Decoders.'Decoders.text')
+  decoder = Decoders.'Decoders.singleRow' (Decoders.'Decoders.column' (Decoders.'Decoders.nonNullable' Decoders.'Decoders.text'))
   in 'dynamicallyParameterized' snippet decoder
 @
 
