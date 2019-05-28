@@ -14,7 +14,7 @@ you can use string literals to construct it from string.
 Here's an example:
 
 @
-selectSubstring :: Text -> Maybe Int64 -> Maybe Int64 -> 'Snippet'
+selectSubstring :: Text -> Maybe Int32 -> Maybe Int32 -> 'Snippet'
 selectSubstring string from to =
   "select substring(" <> 'param' string <>
   'foldMap' (\\ x -> " from " <> 'param' x) from <>

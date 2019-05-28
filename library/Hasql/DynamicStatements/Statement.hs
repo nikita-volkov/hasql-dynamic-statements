@@ -19,12 +19,12 @@ This is useful when the SQL of your statement depends on the parameters.
 Here's an example:
 
 @
-selectSubstring :: Text -> Maybe Int64 -> Maybe Int64 -> 'Statement' () Text
+selectSubstring :: Text -> Maybe Int32 -> Maybe Int32 -> 'Statement' () Text
 selectSubstring string from to = let
   snippet =
     "select substring(" <> Snippet.'SnippetDefs.param' string <>
     foldMap (mappend " from " . Snippet.'SnippetDefs.param') from <>
-    foldMap (mappend " to " . Snippet.'SnippetDefs.param') to <>
+    foldMap (mappend " for " . Snippet.'SnippetDefs.param') to <>
     ")"
   decoder = Decoders.'Decoders.singleRow' (Decoders.'Decoders.column' Decoders.'Decoders.text')
   in 'dynamicallyParameterized' snippet decoder
@@ -33,7 +33,7 @@ selectSubstring string from to = let
 Without the Snippet API you would have had to implement the same functionality thus:
 
 @
-selectSubstring' :: Text -> Maybe Int64 -> Maybe Int64 -> 'Statement' () Text
+selectSubstring' :: Text -> Maybe Int32 -> Maybe Int32 -> 'Statement' () Text
 selectSubstring' string from to = let
   sql = case (from, to) of
     (Just _, Just _) -> "select substring($1 from $2 to $3)"
