@@ -14,6 +14,9 @@ import qualified Hasql.Session as Session
 import qualified Hasql.Connection as Connection
 import qualified Hasql.DynamicStatements.Snippet as Snippet
 import qualified Hasql.DynamicStatements.Session as Session
+import qualified Hasql.DynamicStatements.Statement as Statement
+import qualified Data.ByteString as ByteString
+import qualified Data.ByteString.Char8 as ByteStringChar8
 
 
 main =
@@ -36,6 +39,19 @@ tree =
         assertEqual "" (Right (Right "bcd")) =<< sample "abcd" (Just 2) (Just 3)
         assertEqual "" (Right (Right "abc")) =<< sample "abcd" Nothing (Just 3)
         assertEqual "" (Right (Right "bcd")) =<< sample "abcd" (Just 2) Nothing
+    ,
+    testGroup "Regression" [
+        testCase "Missing $ for 1000th parameter string #2" $ let
+          snippet =
+            "SELECT 1 " <> (foldMap @[] ("," <>) $ replicate 1001 $ Snippet.param (10::Int64))
+          statement =
+            Statement.dynamicallyParameterized snippet Decoders.noResult
+          sql =
+            case statement of
+              Statement.Statement x _ _ _ -> x
+          in do
+            assertBool (ByteStringChar8.unpack sql) (isJust (ByteString.findSubstring "$1000" sql))
+      ]
   ]
 
 runSession :: Session.Session a -> IO (Either Connection.ConnectionError (Either Session.QueryError a))
