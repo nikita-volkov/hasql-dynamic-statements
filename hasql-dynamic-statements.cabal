@@ -38,7 +38,7 @@ library
     containers >=0.6 && <0.7,
     hasql >=1.4 && <1.5,
     hasql-implicits >=0.1 && <0.2,
-    ptr >=0.16.6 && <0.17
+    ptr >=0.16.7.2 && <0.17
 
 test-suite test
   type: exitcode-stdio-1.0
