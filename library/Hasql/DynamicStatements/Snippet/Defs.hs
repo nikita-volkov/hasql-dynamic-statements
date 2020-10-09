@@ -10,7 +10,7 @@ Composable SQL snippet with parameters injected.
 Abstracts over placeholders and matching of encoders.
 
 It has an instance of `IsString`, so having the @OverloadedStrings@ extension enabled
-you can use string literals to construct it from string.
+you can construct it directly from string literals.
 
 Here's an example:
 
