@@ -33,7 +33,7 @@ tree =
           foldMap (mappend " for " . Snippet.param @Int32) to <>
           ")"
         decoder = Decoders.singleRow (Decoders.column (Decoders.nonNullable Decoders.text))
-        in runSession (Session.dynamicallyParameterizedStatement snippet decoder)
+        in runSession (Session.dynamicallyParameterizedStatement snippet decoder True)
       in do
         assertEqual "" (Right (Right "bc")) =<< sample "abcd" (Just 2) (Just 2)
         assertEqual "" (Right (Right "bcd")) =<< sample "abcd" (Just 2) (Just 3)
@@ -45,7 +45,7 @@ tree =
           snippet =
             "SELECT 1 " <> (foldMap @[] ("," <>) $ replicate 1001 $ Snippet.param (10::Int64))
           statement =
-            Statement.dynamicallyParameterized snippet Decoders.noResult
+            Statement.dynamicallyParameterized snippet Decoders.noResult True
           sql =
             case statement of
               Statement.Statement x _ _ _ -> x

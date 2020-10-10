@@ -15,5 +15,6 @@ This is merely a shortcut, which immediately embeds
 in @Session@.
 For details see the docs on that function.
 -}
-dynamicallyParameterizedStatement :: SnippetDefs.Snippet -> Decoders.Result result -> Session result
-dynamicallyParameterizedStatement snippet decoder = Session.statement () (Statement.dynamicallyParameterized snippet decoder)
+dynamicallyParameterizedStatement :: SnippetDefs.Snippet -> Decoders.Result result -> Bool -> Session result
+dynamicallyParameterizedStatement snippet decoder prepared =
+  Session.statement () (Statement.dynamicallyParameterized snippet decoder prepared)
