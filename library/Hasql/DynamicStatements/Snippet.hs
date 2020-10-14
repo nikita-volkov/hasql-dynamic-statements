@@ -3,6 +3,7 @@ module Hasql.DynamicStatements.Snippet
   Snippet,
   param,
   encoderAndParam,
+  sql,
 )
 where
 
