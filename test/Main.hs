@@ -50,7 +50,7 @@ tree =
             case statement of
               Statement.Statement x _ _ _ -> x
           in do
-            assertBool (ByteStringChar8.unpack sql) (isJust (ByteString.findSubstring "$1000" sql))
+            assertBool (ByteStringChar8.unpack sql) (ByteString.isInfixOf "$1000" sql)
       ]
   ]
 
