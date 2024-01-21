@@ -3,8 +3,6 @@ module Hasql.DynamicStatements.Prelude
   )
 where
 
--- base
--------------------------
 import Control.Applicative as Exports
 import Control.Arrow as Exports
 import Control.Category as Exports
@@ -17,11 +15,6 @@ import Control.Monad.IO.Class as Exports
 import Control.Monad.ST as Exports
 import Data.Bits as Exports
 import Data.Bool as Exports
--- containers
--------------------------
-
--- bytestring
--------------------------
 import Data.ByteString as Exports (ByteString)
 import Data.Char as Exports
 import Data.Coerce as Exports
