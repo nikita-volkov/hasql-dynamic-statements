@@ -1,16 +1,16 @@
 module Main where
 
-import qualified Data.ByteString as ByteString
-import qualified Data.ByteString.Char8 as ByteStringChar8
-import qualified Hasql.Connection as Connection
-import qualified Hasql.Decoders as Decoders
-import qualified Hasql.DynamicStatements.Session as Session
-import qualified Hasql.DynamicStatements.Snippet as Snippet
-import qualified Hasql.DynamicStatements.Statement as Statement
-import qualified Hasql.Encoders as Encoders
-import qualified Hasql.Session as Session
-import qualified Hasql.Statement as Statement
-import qualified Test.QuickCheck as QuickCheck
+import Data.ByteString qualified as ByteString
+import Data.ByteString.Char8 qualified as ByteStringChar8
+import Hasql.Connection qualified as Connection
+import Hasql.Decoders qualified as Decoders
+import Hasql.DynamicStatements.Session qualified as Session
+import Hasql.DynamicStatements.Snippet qualified as Snippet
+import Hasql.DynamicStatements.Statement qualified as Statement
+import Hasql.Encoders qualified as Encoders
+import Hasql.Session qualified as Session
+import Hasql.Statement qualified as Statement
+import Test.QuickCheck qualified as QuickCheck
 import Test.QuickCheck.Instances
 import Test.Tasty
 import Test.Tasty.HUnit
