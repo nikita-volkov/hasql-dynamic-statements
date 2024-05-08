@@ -7,20 +7,17 @@ import Hasql.Decoders qualified as Decoders
 import Hasql.DynamicStatements.Session qualified as Session
 import Hasql.DynamicStatements.Snippet qualified as Snippet
 import Hasql.DynamicStatements.Statement qualified as Statement
-import Hasql.Encoders qualified as Encoders
 import Hasql.Session qualified as Session
 import Hasql.Statement qualified as Statement
-import Test.QuickCheck qualified as QuickCheck
-import Test.QuickCheck.Instances
 import Test.Tasty
 import Test.Tasty.HUnit
-import Test.Tasty.QuickCheck
-import Test.Tasty.Runners
 import Prelude hiding (assert)
 
+main :: IO ()
 main =
   defaultMain tree
 
+tree :: TestTree
 tree =
   testGroup
     "All tests"
@@ -54,7 +51,7 @@ tree =
         ]
     ]
 
-runSession :: Session.Session a -> IO (Either Connection.ConnectionError (Either Session.QueryError a))
+runSession :: Session.Session a -> IO (Either Connection.ConnectionError (Either Session.SessionError a))
 runSession = withConnection . Session.run
 
 withConnection :: (Connection.Connection -> IO a) -> IO (Either Connection.ConnectionError a)
