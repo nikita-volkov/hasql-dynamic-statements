@@ -3,6 +3,7 @@ module Hasql.DynamicStatements.Snippet.Defs where
 import Hasql.DynamicStatements.Prelude
 import Hasql.Encoders qualified as Encoders
 import Hasql.Implicits.Encoders qualified as Encoders
+import TextBuilder qualified
 
 -- |
 -- Composable SQL snippet with parameters injected.
@@ -29,7 +30,7 @@ import Hasql.Implicits.Encoders qualified as Encoders
 newtype Snippet = Snippet (Seq SnippetChunk)
 
 data SnippetChunk
-  = StringSnippetChunk ByteString
+  = StringSnippetChunk TextBuilder.TextBuilder
   | ParamSnippetChunk (Encoders.Params ())
 
 deriving instance Semigroup Snippet
@@ -40,9 +41,9 @@ instance IsString Snippet where
   fromString x = Snippet (pure (StringSnippetChunk (fromString x)))
 
 -- |
--- SQL chunk in ASCII.
-sql :: ByteString -> Snippet
-sql x = Snippet (pure (StringSnippetChunk x))
+-- SQL chunk.
+sql :: Text -> Snippet
+sql x = Snippet (pure (StringSnippetChunk (TextBuilder.text x)))
 
 -- |
 -- Parameter encoded using an implicitly derived encoder from the type.
@@ -53,3 +54,17 @@ param = encoderAndParam Encoders.defaultParam
 -- Parameter with an explicitly defined encoder.
 encoderAndParam :: Encoders.NullableOrNot Encoders.Value param -> param -> Snippet
 encoderAndParam encoder param = Snippet (pure (ParamSnippetChunk (param >$ Encoders.param encoder)))
+
+compile :: Snippet -> (Text, Encoders.Params ())
+compile (Snippet chunks) =
+  let step (!paramId, !builder, !encoder) = \case
+        StringSnippetChunk sql ->
+          (paramId, builder <> sql, encoder)
+        ParamSnippetChunk paramEncoder ->
+          let newParamId = paramId + 1
+              newPoking = builder <> "$" <> TextBuilder.decimal paramId
+              newEncoder = encoder <> paramEncoder
+           in (newParamId, newPoking, newEncoder)
+      (_, builder, encoder) = foldl' step (1 :: Int, mempty, mempty) chunks
+      sql = TextBuilder.toText builder
+   in (sql, encoder)

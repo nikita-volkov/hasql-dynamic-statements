@@ -1,11 +1,8 @@
 module Hasql.DynamicStatements.Statement where
 
 import Hasql.Decoders qualified as Decoders
-import Hasql.DynamicStatements.Prelude
 import Hasql.DynamicStatements.Snippet.Defs qualified as SnippetDefs
 import Hasql.Statement
-import Ptr.ByteString qualified as ByteString
-import Ptr.Poking qualified as Poking
 
 -- |
 -- Construct a statement dynamically, specifying the parameters in-place
@@ -27,7 +24,7 @@ import Ptr.Poking qualified as Poking
 --     foldMap (mappend " for " . Snippet.'SnippetDefs.param') to <>
 --     ")"
 --   decoder = Decoders.'Decoders.singleRow' (Decoders.'Decoders.column' (Decoders.'Decoders.nonNullable' Decoders.'Decoders.text'))
---   in 'dynamicallyParameterized' snippet decoder True
+--   in 'dynamicallyParameterized' snippet decoder
 -- @
 --
 -- Without the Snippet API you would have had to implement the same functionality thus:
@@ -41,23 +38,16 @@ import Ptr.Poking qualified as Poking
 --     (Nothing, Just _) -> "select substring($1 to $2)"
 --     (Nothing, Nothing) -> "select substring($1)"
 --   encoder =
---     Encoders.'Encoders.param' (string '>$' Encoders.'Encoders.text') <>
---     foldMap (\\ x -> Encoders.'Encoders.param' (x '>$' Encoders.'Encoders.int8')) from <>
+--     Encoders.'Encoders.param' (string '>$' Encoders.'Encoders.text') '<>'
+--     foldMap (\\ x -> Encoders.'Encoders.param' (x '>$' Encoders.'Encoders.int8')) from '<>'
 --     foldMap (\\ x -> Encoders.'Encoders.param' (x '>$' Encoders.'Encoders.int8')) to
 --   decoder = Decoders.'Decoders.singleRow' (Decoders.'Decoders.column' (Decoders.'Decoders.nonNullable' Decoders.'Decoders.text'))
---   in Statement sql encoder decoder True
+--   in Statement.'Statement.preparable' sql encoder decoder
 -- @
 --
 -- As you can see, the Snippet API abstracts over placeholders and
 -- matching encoder generation, thus also protecting you from all sorts of related bugs.
-dynamicallyParameterized :: SnippetDefs.Snippet -> Decoders.Result result -> Bool -> Statement () result
-dynamicallyParameterized (SnippetDefs.Snippet chunks) decoder prepared =
-  let step (!paramId, !poking, !encoder) = \case
-        SnippetDefs.StringSnippetChunk sql -> (paramId, poking <> Poking.bytes sql, encoder)
-        SnippetDefs.ParamSnippetChunk paramEncoder ->
-          let newParamId = paramId + 1
-              newPoking = poking <> Poking.word8 36 <> Poking.asciiIntegral paramId
-              newEncoder = encoder <> paramEncoder
-           in (newParamId, newPoking, newEncoder)
-   in case foldl' step (1, mempty, mempty) chunks of
-        (_, poking, encoder) -> Statement (ByteString.poking poking) encoder decoder prepared
+dynamicallyParameterized :: SnippetDefs.Snippet -> Decoders.Result result -> Statement () result
+dynamicallyParameterized snippet decoder =
+  let (sql, encoder) = SnippetDefs.compile snippet
+   in unpreparable sql encoder decoder
