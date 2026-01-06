@@ -6,5 +6,5 @@ allow-newer:
 
 source-repository-package
   type: git
-  location: https://github.com/nikita-volkov/hasql
-  tag: 82d2fbd0379a13d9d538538d1e666774015c3728
+  location: https://github.com/nikita-volkov/hasql-implicits
+  tag: 853a2b21952375eb86e7ae67696083eb824331e4
