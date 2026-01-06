@@ -41,6 +41,7 @@ import Data.STRef as Exports
 import Data.Semigroup as Exports
 import Data.Sequence as Exports (Seq)
 import Data.String as Exports
+import Data.Text as Exports (Text)
 import Data.Traversable as Exports
 import Data.Tuple as Exports
 import Data.Unique as Exports
