@@ -79,7 +79,7 @@ common test
 
 library
   import: base
-  hs-source-dirs: library
+  hs-source-dirs: src/library
   exposed-modules:
     Hasql.DynamicStatements.Session
     Hasql.DynamicStatements.Snippet
@@ -100,7 +100,7 @@ library
 test-suite test
   import: test
   type: exitcode-stdio-1.0
-  hs-source-dirs: test
+  hs-source-dirs: src/test
   main-is: Main.hs
   build-depends:
     hasql,
