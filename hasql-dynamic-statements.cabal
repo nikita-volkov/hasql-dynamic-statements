@@ -1,6 +1,6 @@
 cabal-version: 3.0
 name: hasql-dynamic-statements
-version: 0.4
+version: 0.5
 synopsis: Hasql extension for dynamic construction of statements
 description:
   Library extending Hasql with an abstraction that simplifies construction of SQL statements, the structure of which depends on the parameters.
