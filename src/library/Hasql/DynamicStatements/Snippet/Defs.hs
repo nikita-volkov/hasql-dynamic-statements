@@ -55,6 +55,11 @@ param = encoderAndParam Encoders.defaultParam
 encoderAndParam :: Encoders.NullableOrNot Encoders.Value param -> param -> Snippet
 encoderAndParam encoder param = Snippet (pure (ParamSnippetChunk (param >$ Encoders.param encoder)))
 
+-- |
+-- Compile a snippet into SQL text with placeholders.
+toSql :: Snippet -> Text
+toSql snippet = fst (compile snippet)
+
 compile :: Snippet -> (Text, Encoders.Params ())
 compile (Snippet chunks) =
   let step (!paramId, !builder, !encoder) = \case
