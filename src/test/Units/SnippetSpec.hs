@@ -2,8 +2,8 @@ module Units.SnippetSpec where
 
 import Hasql.Connection qualified as Connection
 import Hasql.Decoders qualified as Decoders
-import Hasql.DynamicStatements.Session qualified as Session
 import Hasql.DynamicStatements.Snippet qualified as Snippet
+import Hasql.Session qualified as Session
 import Test.Hspec
 import Prelude
 
@@ -19,7 +19,7 @@ spec = do
                     <> foldMap (mappend " for " . Snippet.param @Int32) to
                     <> ")"
                 decoder = Decoders.singleRow (Decoders.column (Decoders.nonNullable Decoders.text))
-             in Connection.use connection (Session.dynamicallyParameterizedStatement snippet decoder)
+             in Connection.use connection (Session.statement () (Snippet.toStatement snippet decoder))
        in do
             shouldBe (Right "bc") =<< sample "abcd" (Just 2) (Just 2)
             shouldBe (Right "bcd") =<< sample "abcd" (Just 2) (Just 3)
