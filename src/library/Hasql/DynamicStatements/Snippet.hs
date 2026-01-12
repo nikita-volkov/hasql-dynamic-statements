@@ -45,23 +45,29 @@ import TextBuilder qualified
 -- 'Hasql.DynamicStatements.Snippet.toStatement' or directly execute it in
 -- 'Hasql.Session.Session' using
 -- 'Hasql.DynamicStatements.Snippet.toSession'.
-newtype Snippet = Snippet (Seq SnippetChunk)
+data Snippet
+  = Snippet
+      (Int -> TextBuilder.TextBuilder)
+      Int
+      (Encoders.Params ())
 
-data SnippetChunk
-  = StringSnippetChunk TextBuilder.TextBuilder
-  | ParamSnippetChunk (Encoders.Params ())
+instance Semigroup Snippet where
+  Snippet sql1 paramCount1 encoder1 <> Snippet sql2 paramCount2 encoder2 =
+    Snippet
+      (\paramId -> sql1 paramId <> sql2 (paramId + paramCount1))
+      (paramCount1 + paramCount2)
+      (encoder1 <> encoder2)
 
-deriving instance Semigroup Snippet
-
-deriving instance Monoid Snippet
+instance Monoid Snippet where
+  mempty = Snippet (\_ -> mempty) 0 mempty
 
 instance IsString Snippet where
-  fromString x = Snippet (pure (StringSnippetChunk (fromString x)))
+  fromString = sql . fromString
 
 -- |
 -- SQL chunk.
 sql :: Text -> Snippet
-sql x = Snippet (pure (StringSnippetChunk (TextBuilder.text x)))
+sql x = Snippet (const (TextBuilder.text x)) 0 mempty
 
 -- |
 -- Parameter encoded using an implicitly derived encoder from the type.
@@ -71,26 +77,17 @@ param = encoderAndParam Encoders.defaultParam
 -- |
 -- Parameter with an explicitly defined encoder.
 encoderAndParam :: Encoders.NullableOrNot Encoders.Value param -> param -> Snippet
-encoderAndParam encoder param = Snippet (pure (ParamSnippetChunk (param >$ Encoders.param encoder)))
-
-compile :: Snippet -> (Text, Encoders.Params ())
-compile (Snippet chunks) =
-  let step (!paramId, !builder, !encoder) = \case
-        StringSnippetChunk sql ->
-          (paramId, builder <> sql, encoder)
-        ParamSnippetChunk paramEncoder ->
-          let newParamId = paramId + 1
-              newPoking = builder <> "$" <> TextBuilder.decimal paramId
-              newEncoder = encoder <> paramEncoder
-           in (newParamId, newPoking, newEncoder)
-      (_, builder, encoder) = foldl' step (1 :: Int, mempty, mempty) chunks
-      sql = TextBuilder.toText builder
-   in (sql, encoder)
+encoderAndParam encoder param =
+  Snippet
+    (\paramId -> "$" <> TextBuilder.decimal paramId)
+    1
+    (param >$ Encoders.param encoder)
 
 -- |
 -- Compile a snippet into SQL text with placeholders.
 toSql :: Snippet -> Text
-toSql snippet = fst (compile snippet)
+toSql (Snippet sql _ _) =
+  TextBuilder.toText (sql 1)
 
 -- |
 -- Construct a statement dynamically, specifying the parameters in-place
@@ -136,9 +133,8 @@ toSql snippet = fst (compile snippet)
 -- As you can see, the Snippet API abstracts over placeholders and
 -- matching encoder generation, thus also protecting you from all sorts of related bugs.
 toStatement :: Snippet -> Decoders.Result result -> Statement.Statement () result
-toStatement snippet =
-  let (sql, encoder) = compile snippet
-   in Statement.unpreparable sql encoder
+toStatement (Snippet sql _ encoder) =
+  Statement.unpreparable (TextBuilder.toText (sql 1)) encoder
 
 -- |
 -- Execute in @Session.Session@, providing a result decoder.
