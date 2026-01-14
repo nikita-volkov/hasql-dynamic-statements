@@ -3,7 +3,28 @@ name: hasql-dynamic-statements
 version: 0.5
 synopsis: Hasql extension for dynamic construction of statements
 description:
-  Library extending Hasql with an abstraction that simplifies construction of SQL statements, the structure of which depends on the parameters.
+  Library extending Hasql with a composable API for building SQL statements dynamically.
+
+  The core abstraction is 'Snippet', which allows you to construct SQL statements with parameters
+  injected in-place, automatically handling placeholders and encoder matching. This is particularly
+  useful when the structure of your SQL depends on runtime parameters.
+
+  Key features:
+
+  * Composable SQL snippets using 'Semigroup' and 'Monoid' instances
+  * Automatic placeholder generation and parameter encoding
+  * Type-safe parameter injection with implicit encoder derivation
+  * Protection against common SQL construction bugs
+  * Support for conditional SQL structure based on parameters
+
+  Example:
+
+  > selectSubstring :: Text -> Maybe Int32 -> Maybe Int32 -> Snippet
+  > selectSubstring string from to =
+  >   "select substring(" <> param string <>
+  >   foldMap (\x -> " from " <> param x) from <>
+  >   foldMap (\x -> " for " <> param x) to <>
+  >   ")"
 
 homepage: https://github.com/nikita-volkov/hasql-dynamic-statements
 bug-reports:
@@ -16,6 +37,7 @@ license: MIT
 license-file: LICENSE
 extra-doc-files:
   CHANGELOG.md
+  README.md
 
 source-repository head
   type: git
