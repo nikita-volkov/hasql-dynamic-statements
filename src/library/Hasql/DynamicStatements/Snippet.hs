@@ -4,6 +4,7 @@ module Hasql.DynamicStatements.Snippet
     -- * Execution
     toSql,
     toStatement,
+    toPreparableStatement,
     toSession,
     toPipeline,
 
@@ -133,8 +134,14 @@ toSql (Snippet sql _ _) =
 -- As you can see, the Snippet API abstracts over placeholders and
 -- matching encoder generation, thus also protecting you from all sorts of related bugs.
 toStatement :: Snippet -> Decoders.Result result -> Statement.Statement () result
-toStatement (Snippet sql _ encoder) =
-  Statement.unpreparable (TextBuilder.toText (sql 1)) encoder
+toStatement = toStatement' Statement.unpreparable
+
+toPreparableStatement :: Snippet -> Decoders.Result result -> Statement.Statement () result
+toPreparableStatement = toStatement' Statement.preparable
+
+toStatement' :: (Text -> Encoders.Params () -> t) -> Snippet -> t
+toStatement' stmt (Snippet sql _ encoder) =
+  stmt (TextBuilder.toText (sql 1)) encoder
 
 -- |
 -- Execute in @Session.Session@, providing a result decoder.
