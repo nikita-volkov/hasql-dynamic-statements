@@ -128,7 +128,7 @@ toSql (Snippet sql _ _) =
 --     foldMap (\\ x -> Encoders.'Encoders.param' (x '>$' Encoders.'Encoders.int8')) from '<>'
 --     foldMap (\\ x -> Encoders.'Encoders.param' (x '>$' Encoders.'Encoders.int8')) to
 --   decoder = Decoders.'Decoders.singleRow' (Decoders.'Decoders.column' (Decoders.'Decoders.nonNullable' Decoders.'Decoders.text'))
---   in Statement.'Statement.preparable' sql encoder decoder
+--   in Statement.'Statement.unpreparable' sql encoder decoder
 -- @
 --
 -- As you can see, the Snippet API abstracts over placeholders and
