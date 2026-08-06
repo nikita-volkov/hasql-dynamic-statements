@@ -1,3 +1,7 @@
+# v0.5.1.1
+
+- Support `hasql-2`: widened the `hasql` dependency bound to `>=1.10 && <1.11 || >=2.0 && <2.1`
+
 # v0.5
 
 - (Breaking) Removed `Hasql.DynamicStatements.Session` module

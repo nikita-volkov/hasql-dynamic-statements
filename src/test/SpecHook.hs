@@ -3,6 +3,7 @@ module SpecHook where
 
 import Hasql.Connection qualified as Connection
 import Hasql.Connection.Settings qualified as Settings
+import Pqi.Native qualified as Pqi
 import Test.Hspec
 import TestcontainersPostgresql qualified
 import Prelude
@@ -33,7 +34,7 @@ hook hookedSpec = parallel do
                             ]
                     bracket
                       ( do
-                          res <- Connection.acquire settings
+                          res <- Connection.acquire Pqi.adapter settings
                           case res of
                             Left err -> fail ("Connection failed: " <> show err)
                             Right conn -> pure conn
