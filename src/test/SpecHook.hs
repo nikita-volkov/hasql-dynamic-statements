@@ -4,9 +4,9 @@ module SpecHook where
 import Hasql.Connection qualified as Connection
 import Hasql.Connection.Settings qualified as Settings
 import Pqi.Native qualified as Pqi
+import Prelude
 import Test.Hspec
 import TestcontainersPostgresql qualified
-import Prelude
 
 type HookedSpec = SpecWith Connection.Connection
 

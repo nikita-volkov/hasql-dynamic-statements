@@ -4,8 +4,8 @@ import Hasql.Connection qualified as Connection
 import Hasql.Decoders qualified as Decoders
 import Hasql.DynamicStatements.Snippet qualified as Snippet
 import Hasql.Session qualified as Session
-import Test.Hspec
 import Prelude
+import Test.Hspec
 
 spec :: SpecWith Connection.Connection
 spec =
