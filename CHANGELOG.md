@@ -1,6 +1,14 @@
+# v0.5.1.2
+
+- Widened the `containers` dependency bound to `>=0.6 && <0.9`
+
 # v0.5.1.1
 
 - Support `hasql-2`: widened the `hasql` dependency bound to `>=1.10 && <1.11 || >=2.0 && <2.1`
+
+# v0.5.1
+
+- Added `toPreparableStatement` to the `Hasql.DynamicStatements.Snippet` module
 
 # v0.5
 
