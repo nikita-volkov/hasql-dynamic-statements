@@ -1,3 +1,7 @@
+# v0.5.1.3
+
+- Support `hasql-2.1`.
+
 # v0.5.1.2
 
 - Widened the `containers` dependency bound to `>=0.6 && <0.9`
